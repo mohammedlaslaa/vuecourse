@@ -27,15 +27,15 @@
       <div class="column is-4" v-if="selectedHero">
         <div class="card">
           <header class="card-header">
-            <p class="card-header-title">{{ selectedHero.firstName }}</p>
+            <p class="card-header-title">{{ fullName }}</p>
           </header>
           <div class="card-content">
             <div class="content">
               <div class="field">
                 <label class="label" for="id">id</label>
-                <label class="input" id="id" readonly>{{
-                  selectedHero.id
-                }}</label>
+                <label class="input" id="id" readonly>
+                  {{ selectedHero.id }}
+                </label>
               </div>
               <div class="field">
                 <label class="label" for="firstName">first name</label>
@@ -57,9 +57,38 @@
                 <label class="label" for="description">description</label>
                 <input
                   class="input"
+                  type="text"
                   id="description"
                   v-model="selectedHero.description"
                 />
+              </div>
+              <div class="field">
+                <label class="label" for="capeCounter">cape counter</label>
+                <input
+                  class="input"
+                  type="number"
+                  id="capeCounter"
+                  v-model="selectedHero.capeCounter"
+                />
+              </div>
+              <div class="field">
+                <label class="label" for="capeMessage">cape message</label>
+                <label class="input" name="capeMessage">{{
+                  capeMessage
+                }}</label>
+              </div>
+              <div class="field">
+                <label class="label" for="originDate">Date</label>
+                <input
+                  class="input"
+                  type="date"
+                  id="originDate"
+                  v-model="selectedHero.originDate"
+                />
+                <p class="comment">
+                  My origin date began on
+                  {{ selectedHero.originDate | shortDate }}
+                </p>
               </div>
             </div>
           </div>
@@ -83,35 +112,73 @@
 </template>
 
 <script>
+import { format } from 'date-fns';
+const inputDateFormat = 'YYYY-MM-DD';
+const displayDateFormat = 'DD MMM YY';
 const ourHeroes = [
   {
     id: 10,
     firstName: 'Ella',
     lastName: 'Papa',
+    capeCounter: 1,
+    originDate: format(new Date(1987, 10, 1), inputDateFormat),
     description: 'fashionista',
   },
   {
     id: 20,
     firstName: 'Madelyn',
     lastName: 'Papa',
+    capeCounter: 2,
+    originDate: format(new Date(1987, 1, 12), inputDateFormat),
     description: 'the cat whisperer',
   },
   {
     id: 30,
     firstName: 'Haley',
     lastName: 'Papa',
+    capeCounter: 3,
+    originDate: format(new Date(1987, 1, 11), inputDateFormat),
     description: 'pen wielder',
   },
   {
     id: 40,
     firstName: 'Landon',
     lastName: 'Papa',
+    capeCounter: 8,
+    originDate: format(new Date(1987, 1, 18), inputDateFormat),
     description: 'arc trooper',
   },
 ];
 export default {
   name: 'Heroes',
+  data() {
+    return {
+      heroes: ourHeroes,
+      selectedHero: undefined,
+      message: '',
+      capeMessage: '',
+    };
+  },
+  computed: {
+    fullName: function() {
+      return `${this.selectedHero.firstName} ${this.selectedHero.lastName}`;
+    },
+  },
+  created() {
+    this.loadHeroes();
+  },
   methods: {
+    async getHeroes() {
+      return new Promise(resolve => {
+        setTimeout(() => resolve(ourHeroes), 1500);
+      });
+    },
+    async loadHeroes() {
+      this.heroes = [];
+      this.message = 'Loading....';
+      this.heroes = await this.getHeroes();
+      this.message = '';
+    },
     handleTheCapes(newValue) {
       const value = parseInt(newValue, 10);
       switch (value) {
@@ -139,6 +206,19 @@ export default {
     },
     selectHero(hero) {
       this.selectedHero = hero;
+    },
+  },
+  watch: {
+    'selectedHero.capeCounter': {
+      immediate: true,
+      handler(newValue) {
+        this.handleTheCapes(newValue);
+      },
+    },
+  },
+  filters: {
+    shortDate: function(value) {
+      return format(value, displayDateFormat);
     },
   },
 };
