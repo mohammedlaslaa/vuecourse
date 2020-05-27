@@ -3,7 +3,7 @@ module.exports = {
   env: {
     node: true,
   },
-  extends: ['plugin:vue/essential', '@vue/prettier'],
+  extends: ['plugin:vue/base', '@vue/prettier'],
   plugins: ['prettier'],
   // watch this for explaining why some of this is here
   // https://www.youtube.com/watch?time_continue=239&v=YIvjKId9m2c
@@ -14,9 +14,8 @@ module.exports = {
     'prettier/prettier': [
       'error',
       {
-        trailingComma: 'es5',
+        trailingComma: 'all',
         singleQuote: true,
-        printWidth: 80,
       },
     ],
     'vue/no-unused-components': [
