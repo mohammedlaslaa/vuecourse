@@ -7,11 +7,11 @@ import { API } from './config';
 
 const getHeroes = async function() {
   try {
-    const response = await axios.get(`${API}/heroes`);
+    const response = await axios.get(`${API}/db.json`);
 
     let data = parseList(response);
-
-    const heroes = data.map(h => {
+    console.log(data);
+    const heroes = data.heroes.map(h => {
       h.originDate = format(h.originDate, inputDateFormat);
       return h;
     });

@@ -49,7 +49,8 @@
 </template>
 
 <script>
-import { dataService } from '../shared';
+import { mapActions, mapGetters } from 'vuex';
+import { cloneDeep } from 'lodash';
 
 export default {
   name: 'HeroDetail',
@@ -64,7 +65,7 @@ export default {
       hero: {},
     };
   },
-  async created() {
+  created() {
     if (this.isAddMode) {
       this.hero = {
         id: undefined,
@@ -73,10 +74,13 @@ export default {
         description: '',
       };
     } else {
-      this.hero = await dataService.getHero(this.id);
+      // this.hero = await dataService.getHero(this.id);
+      // this.hero = this.getHeroById(this.id);
+      this.hero = cloneDeep(this.getHeroById(this.id));
     }
   },
   computed: {
+    ...mapGetters(['getHeroById']),
     isAddMode() {
       return !this.id;
     },
@@ -85,13 +89,14 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['addHeroAction', 'updateHeroAction']),
     cancelHero() {
       this.$router.push({ name: 'heroes' });
     },
     async saveHero() {
       this.hero.id
-        ? await dataService.updateHero(this.hero)
-        : await dataService.addHero(this.hero);
+        ? await this.updateHeroAction(this.hero)
+        : await this.addHeroAction(this.hero);
       this.$router.push({ name: 'heroes' });
     },
   },

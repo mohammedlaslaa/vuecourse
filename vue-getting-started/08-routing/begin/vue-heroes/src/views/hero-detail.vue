@@ -22,19 +22,12 @@
             </div>
             <div class="field">
               <label class="label" for="description">description</label>
-              <input
-                class="input"
-                name="description"
-                v-model="hero.description"
-              />
+              <input class="input" name="description" v-model="hero.description" />
             </div>
           </div>
         </div>
         <footer class="card-footer">
-          <button
-            class="link card-footer-item cancel-button"
-            @click="cancelHero()"
-          >
+          <button class="link card-footer-item cancel-button" @click="cancelHero()">
             <i class="fas fa-undo"></i>
             <span>Cancel</span>
           </button>
@@ -74,11 +67,11 @@ export default {
   },
   methods: {
     cancelHero() {
-      this.$emit('done');
+      this.$router.push({ name: 'heroes' });
     },
     async saveHero() {
       await dataService.updateHero(this.hero);
-      this.$emit('done');
+      this.$router.push({ name: 'heroes' });
     },
   },
 };
